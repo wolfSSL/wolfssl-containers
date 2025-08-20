@@ -24,6 +24,17 @@ An active wolfCrypt FIPS license is needed to use this container. The associated
 is acquired from wolfSSL Inc. Please contact fips@wolfssl.com for more
 information.
 
+## Python Containers (./python)
+
+This directory contains Dockerfiles for building Python-based containers using
+wolfSSL's cryptographic libraries.
+
+### Available Dockerfiles
+
+**wolfssl-python-3.12-alpine3.22**
+
+This is a Python 3.12 container based on [alpine:3.22](https://hub.docker.com/_/alpine) with wolfSSL integrated, providing secure cryptographic functions for Python applications.
+
 # Support
 
 Technical Support: support@wolfssl.com
