@@ -188,4 +188,8 @@ RUN set -eux; \
 RUN set -eux; \
 	find \( -name libssl.so* -o -name libcrypto.so* \) | xargs rm
 
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod 755 /docker-entrypoint.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
 CMD ["python3"]
