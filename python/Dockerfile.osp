@@ -77,7 +77,7 @@ RUN --mount=type=secret,id=wolfssl_password \
 	# Compile and install wolfSSL
 	cd /usr/src/wolfssl; \
 	# NO_INT128 required due to type conflict with bluetooth.h
-	./configure --enable-all --enable-opensslall --enable-tls13 --enable-tlsx --enable-tlsv10 --enable-crl \
+	./configure --enable-opensslall --enable-tls13 --enable-tlsx --enable-crl \
 		--enable-postauth --enable-certext --enable-certgen --enable-scrypt --enable-sessioncerts \
 		CFLAGS="-DHAVE_EX_DATA -DWOLFSSL_ERROR_CODE_OPENSSL -DHAVE_SECRET_CALLBACK -DWOLFSSL_PYTHON \
 		-DWOLFSSL_ALT_NAMES -DWOLFSSL_SIGNER_DER_CERT -DKEEP_PEER_CERT -DNO_INT128" --prefix=/usr \
