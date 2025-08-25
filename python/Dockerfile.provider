@@ -121,6 +121,7 @@ RUN --mount=type=secret,id=wolfssl_password \
 	rm python.tar.xz; \
 	\
 	cd /usr/src/python; \
+	sed -i 's/#define PY_OPENSSL_HAS_SCRYPT 1//g' Modules/_hashopenssl.c; \
 	gnuArch="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"; \
 	./configure \
 		--build="$gnuArch" \
