@@ -745,7 +745,7 @@ public class FipsInitCheck {
         /* JCE service types that should use wolfJCE */
         String[] jceServiceTypes = {
             "MessageDigest", "Mac", "Cipher", "Signature", "KeyGenerator",
-            "KeyPairGenerator", "KeyAgreement",
+            "KeyPairGenerator", "KeyAgreement", "SecretKeyFactory",
             "AlgorithmParameterGenerator", "SecureRandom"
         };
 
