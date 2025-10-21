@@ -168,7 +168,7 @@ security.provider.10=JdkSASL
 # entries.
 #
 # FIPS: Prefer wolfJCE DRBG for SecureRandom.getInstanceStrong()
-securerandom.strongAlgorithms=HashDRBG:wolfJCE
+securerandom.strongAlgorithms=HashDRBG:wolfJCE,Hash_DRBG:wolfJCE,DRBG:wolfJCE
 
 #
 # Sun provider DRBG configuration and default instantiation request.
