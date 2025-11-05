@@ -216,6 +216,7 @@ docker run -v /path/to/your/app:/app \
 |----------|-------------|---------|
 | `JAVA_OPTS` | JVM configuration options | `-Xmx512m` |
 | `JAVA_TOOL_OPTIONS` | JVM module access flags for filtered providers | See Dockerfile |
+| `CLASSPATH` | Application classpath including provider JARs (for ServiceLoader) | `/usr/share/java/*.jar` |
 | `WOLFJCE_DEBUG` | Enable wolfJCE debug logging | `false` |
 | `WOLFJSSE_DEBUG` | Enable wolfJSSE debug logging | `false` |
 | `WOLFJSSE_ENGINE_DEBUG` | Enable wolfJSSE SSLEngine debug logging | `false` |
@@ -322,6 +323,77 @@ inherit these restrictions.
 **Note:** Applications that override the system krb5.conf with their own
 configuration should ensure they only permit AES-based encryption types to
 maintain FIPS compliance.
+
+### Provider Discovery and ServiceLoader
+
+The wolfSSL security providers (wolfJCE, wolfJSSE, and filtered Sun providers)
+are configured to be discoverable through both Java's Security framework and
+the ServiceLoader mechanism. This dual-path approach ensures maximum
+compatibility with Java applications and frameworks.
+
+**Dual Classpath Configuration:**
+
+Provider JAR files are available on both the boot classpath and application
+classpath:
+
+- **Boot Classpath** (`-Xbootclasspath/a` via `JAVA_TOOL_OPTIONS`):
+  - Required for early provider registration in the Security framework
+  - Ensures providers are available before application code loads
+  - Used by the `java.security` configuration file
+
+- **Application Classpath** (`CLASSPATH` environment variable):
+  - Required for ServiceLoader to discover providers
+  - Enables `ServiceLoader.load(Provider.class)` to find providers
+  - Allows frameworks (Spring Boot, etc.) to discover providers
+  - Set by default to: `/usr/share/java/wolfcrypt-jni.jar:/usr/share/java/wolfssl-jsse.jar:/usr/share/java/filtered-providers.jar`
+
+**ServiceLoader Support:**
+
+All providers include `META-INF/services/java.security.Provider` files for
+ServiceLoader discovery:
+- `com.wolfssl.provider.jce.WolfCryptProvider`
+- `com.wolfssl.provider.jsse.WolfSSLProvider`
+- `com.wolfssl.security.providers.FilteredSun`
+- `com.wolfssl.security.providers.FilteredSunRsaSign`
+- `com.wolfssl.security.providers.FilteredSunEC`
+
+**Important Notes for Application Developers:**
+
+The container's entrypoint script automatically ensures provider JARs are
+included in the `CLASSPATH`, even if you set a custom classpath. This means:
+
+**You can set custom CLASSPATH values without breaking ServiceLoader:**
+
+```bash
+# Example 1: Using docker run with custom CLASSPATH
+docker run -e CLASSPATH=/app/myapp.jar wolfssl-openjdk-fips-root:latest java MyApp
+
+# Example 2: Using -cp flag (note: this overrides CLASSPATH environment variable)
+docker run wolfssl-openjdk-fips-root:latest java -cp /app/myapp.jar MyApp
+```
+
+In both cases, the entrypoint script detects your custom classpath and
+automatically appends the provider JARs to ensure ServiceLoader compatibility.
+
+**Exception - Direct java -cp usage:**
+If you use `java -cp` directly (not through the container entrypoint), you must
+manually include the provider JARs:
+
+```bash
+# When bypassing the entrypoint
+java -cp /app/myapp.jar:/usr/share/java/wolfcrypt-jni.jar:/usr/share/java/wolfssl-jsse.jar:/usr/share/java/filtered-providers.jar \
+     com.example.MyApplication
+```
+
+**How it works:**
+The entrypoint script (in `docker-entrypoint.sh`) checks the `CLASSPATH`
+environment variable at container startup:
+1. If `CLASSPATH` is not set, it sets it to provider JARs only
+2. If `CLASSPATH` is set but missing provider JARs, it appends provider JARs
+3. If `CLASSPATH` already contains provider JARs, no change
+
+This ensures providers are always discoverable via ServiceLoader regardless of
+how users configure their applications.
 
 ### WolfSSLKeyStore (WKS) Format
 

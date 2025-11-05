@@ -56,6 +56,25 @@ if [ -n "$USER_JAVA_OPTS" ]; then
     JAVA_OPTS="$JAVA_OPTS $USER_JAVA_OPTS"
 fi
 
+# Ensure provider JARs are always on CLASSPATH for ServiceLoader support
+# This handles cases where users set a custom CLASSPATH but forget to include
+# the provider JARs
+PROVIDER_JARS="/usr/share/java/wolfcrypt-jni.jar:/usr/share/java/wolfssl-jsse.jar:/usr/share/java/filtered-providers.jar"
+
+if [ -z "$CLASSPATH" ]; then
+    # CLASSPATH not set, use only provider JARs
+    export CLASSPATH="$PROVIDER_JARS"
+else
+    # CLASSPATH is set, check if it already contains our provider JARs
+    if [[ ! "$CLASSPATH" =~ "wolfcrypt-jni.jar" ]] || \
+       [[ ! "$CLASSPATH" =~ "wolfssl-jsse.jar" ]] || \
+       [[ ! "$CLASSPATH" =~ "filtered-providers.jar" ]]; then
+        # Provider JARs not found, append them
+        echo "Note: User CLASSPATH detected, appending wolfSSL provider JARs for ServiceLoader support"
+        export CLASSPATH="${CLASSPATH}:${PROVIDER_JARS}"
+    fi
+fi
+
 export LD_LIBRARY_PATH=/usr/lib/jni:/usr/local/lib:$LD_LIBRARY_PATH
 export JAVA_LIBRARY_PATH=/usr/lib/jni:/usr/local/lib
 
