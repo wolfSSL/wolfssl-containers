@@ -21,10 +21,14 @@ RUN javac -cp "/opt/wolfssl-fips/bin:/usr/share/java/*" \
 # Set the working directory back to /app
 WORKDIR /app
 
+# Add test application classes to CLASSPATH
+# Base image already includes provider JARs in CLASSPATH, so we just prepend our app directory
+ENV CLASSPATH="/app/test:${CLASSPATH}"
+
 # Default command runs the comprehensive FIPS test suite
 # Users can override this to run individual test classes
-CMD ["java", "-cp", "/app/test:/opt/wolfssl-fips/bin:/usr/share/java/*", "FipsUserApplication"]
+CMD ["java", "FipsUserApplication"]
 
 # Alternative commands for running specific test suites:
-# docker run wolfssl-fips-basic-test-image:latest java -cp "/app/test:/opt/wolfssl-fips/bin:/usr/share/java/*" CryptoTestSuite
-# docker run wolfssl-fips-basic-test-image:latest java -cp "/app/test:/opt/wolfssl-fips/bin:/usr/share/java/*" TlsTestSuite
+# docker run wolfssl-fips-basic-test-image:latest java CryptoTestSuite
+# docker run wolfssl-fips-basic-test-image:latest java TlsTestSuite

@@ -96,13 +96,13 @@ docker run --rm wolfssl-fips-basic-test-image:latest
 **JCA Cryptographic Operations Only:**
 ```bash
 docker run --rm wolfssl-fips-basic-test-image:latest \
-  java -cp "/app/test:/opt/wolfssl-fips/bin:/usr/share/java/*" CryptoTestSuite
+  java CryptoTestSuite
 ```
 
 **SSL/TLS Operations Only:**
 ```bash
 docker run --rm wolfssl-fips-basic-test-image:latest \
-  java -cp "/app/test:/opt/wolfssl-fips/bin:/usr/share/java/*" TlsTestSuite
+  java TlsTestSuite
 ```
 
 ## Environment Variables
