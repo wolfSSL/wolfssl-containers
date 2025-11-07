@@ -77,12 +77,14 @@ RUN --mount=type=secret,id=wolfssl_pw \
 # Disabling MD5 since is not a FIPS validated algorithm in cert 4718.
 # Manually adding HAVE_CTS to CFLAGS to enable AES-CTS. wolfSSL versions
 # > 5.8.2 will automatically have this enabled with --enable-jni.
+# Manually adding WOLFSSL_PUBLIC_MP for RSA KeyFactory support. <= 5.8.2
+# did not add this into --enable-jni yet.
 WORKDIR /build/wolfssl
 RUN ./configure \
         --enable-fips=v5 \
         --enable-jni \
         --disable-md5 \
-        --prefix=/usr/local CFLAGS="-DHAVE_CTS" \
+        --prefix=/usr/local CFLAGS="-DHAVE_CTS -DWOLFSSL_PUBLIC_MP" \
     && make -j$(nproc) \
     && echo "Updating FIPS in-core integrity check hash..." \
     && ./fips-hash.sh \
