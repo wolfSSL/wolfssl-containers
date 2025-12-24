@@ -17,6 +17,8 @@ WOLFCRYPT_JNI_REPO="https://github.com/wolfSSL/wolfcrypt-jni.git"
 WOLFCRYPT_JNI_BRANCH="master"
 WOLFSSL_JNI_REPO="https://github.com/wolfSSL/wolfssljni.git"
 WOLFSSL_JNI_BRANCH="master"
+ARCH=$(uname -m)
+TARGET_PLATFORM=""
 
 # Colors for output
 RED='\033[0;31m'
@@ -156,6 +158,16 @@ else
     echo -e "${YELLOW}Using wolfssljni repo: $WOLFSSL_JNI_REPO (branch: $WOLFSSL_JNI_BRANCH)${NC}"
 fi
 
+# Get architecture
+if [ "$ARCH" == "x86_64" ] || [ "$ARCH" == "amd64" ]; then
+    TARGET_PLATFORM="linux/amd64"
+elif [ "$ARCH" == "arm64" ] || [ "$ARCH" == "aarch64" ]; then
+    TARGET_PLATFORM="linux/arm64"
+else
+    echo -e "${RED}Error: Unsupported architecture '${ARCH}'. Supported values are: x86_64, arm64.${NC}"
+        exit 1
+fi
+
 # Check if Docker is running
 if ! docker info > /dev/null 2>&1; then
     echo -e "${RED}Error: Docker is not running${NC}"
@@ -218,6 +230,7 @@ else
 fi
 
 docker build \
+    --platform "$TARGET_PLATFORM" \
     $BUILD_ARGS \
     "${SECRET_FLAG[@]}" \
     -t "$FULL_IMAGE_NAME" \
