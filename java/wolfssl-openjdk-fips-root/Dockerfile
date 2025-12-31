@@ -63,7 +63,7 @@ FROM builder AS wolfssl-builder
 # This bundle name can change depending on wolfCrypt FIPS OE
 RUN --mount=type=secret,id=wolfssl_pw \
     PW="$(cat /run/secrets/wolfssl_pw)" \
-    && curl -fLso /tmp/wolfssl-commercial.7z "https://www.wolfssl.com/comm/wolfssl/wolfssl-5.8.0-commercial-fips-v5.2.3.7z" \
+    && curl -fLso /tmp/wolfssl-commercial.7z "https://www.wolfssl.com/comm/wolfssl/wolfssl-5.8.4-commercial-fips-v5.2.3.7z" \
     && 7z x /tmp/wolfssl-commercial.7z -p"$PW" -o/build \
     && rm -f /tmp/wolfssl-commercial.7z \
     && ls -la /build/ \
@@ -75,16 +75,12 @@ RUN --mount=type=secret,id=wolfssl_pw \
 # We run the wolfCrypt test app to verify native crypto is working after
 # library build.
 # Disabling MD5 since is not a FIPS validated algorithm in cert 4718.
-# Manually adding HAVE_CTS to CFLAGS to enable AES-CTS. wolfSSL versions
-# > 5.8.2 will automatically have this enabled with --enable-jni.
-# Manually adding WOLFSSL_PUBLIC_MP for RSA KeyFactory support. <= 5.8.2
-# did not add this into --enable-jni yet.
 WORKDIR /build/wolfssl
 RUN ./configure \
         --enable-fips=v5 \
         --enable-jni \
         --disable-md5 \
-        --prefix=/usr/local CFLAGS="-DHAVE_CTS -DWOLFSSL_PUBLIC_MP" \
+        --prefix=/usr/local \
     && make -j$(nproc) \
     && echo "Updating FIPS in-core integrity check hash..." \
     && ./fips-hash.sh \
