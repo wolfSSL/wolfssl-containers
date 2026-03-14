@@ -521,6 +521,8 @@ public class FipsInitCheck {
                     "FIPS violation: MessageDigest: " + alg +
                     " should NOT be available in FIPS mode but was " +
                     "provided by " + providerName);
+            } catch (SecurityException se) {
+                throw se;
             } catch (Exception e) {
                 /* Expected behavior - algorithm should not be available */
                 System.out.println("\tMessageDigest: " + alg +
@@ -558,6 +560,8 @@ public class FipsInitCheck {
                 throw new SecurityException("FIPS violation: Mac: " + alg +
                     " should NOT be available in FIPS mode but was " +
                     "provided by " + providerName);
+            } catch (SecurityException se) {
+                throw se;
             } catch (Exception e) {
                 /* Expected behavior - algorithm should not be available */
                 System.out.println("\tMac: " + alg + " -> UNAVAILABLE " +
@@ -597,6 +601,8 @@ public class FipsInitCheck {
                 throw new SecurityException("FIPS violation: Cipher: " + alg +
                     " should NOT be available in FIPS mode but was " +
                     "provided by " + providerName);
+            } catch (SecurityException se) {
+                throw se;
             } catch (Exception e) {
                 /* Expected behavior - algorithm should not be available */
                 System.out.println("\tCipher: " + alg + " -> UNAVAILABLE " +
@@ -636,6 +642,8 @@ public class FipsInitCheck {
                 throw new SecurityException("FIPS violation: Signature: " +
                     alg + " should NOT be available in FIPS mode but " +
                     "was provided by " + providerName);
+            } catch (SecurityException se) {
+                throw se;
             } catch (Exception e) {
                 /* Expected behavior - algorithm should not be available */
                 System.out.println("\tSignature: " + alg + " -> UNAVAILABLE " +
