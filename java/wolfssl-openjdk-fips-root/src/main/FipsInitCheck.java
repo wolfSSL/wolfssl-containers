@@ -24,6 +24,7 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.regex.*;
 import java.security.*;
+import java.security.cert.CertPathBuilder;
 import javax.net.ssl.*;
 import javax.crypto.*;
 
@@ -743,6 +744,27 @@ public class FipsInitCheck {
                     "Failed to create TrustManagerFactory: " + alg + ": " +
                     e.getMessage());
             }
+        }
+
+        /* CertPathBuilder PKIX: wolfJCE with wolfSSL 5.9.2+, otherwise SUN
+         * through FilteredSun (see java.security) */
+        testCount++;
+        try {
+            CertPathBuilder cpb = CertPathBuilder.getInstance("PKIX");
+            String providerName = cpb.getProvider().getName();
+            if ("wolfJCE".equals(providerName) ||
+                "FilteredSun".equals(providerName)) {
+                System.out.println("\tCertPathBuilder: PKIX -> " +
+                    providerName);
+                passCount++;
+            } else {
+                throw new SecurityException("CertPathBuilder: PKIX using " +
+                    "wrong provider: " + providerName +
+                    " (expected wolfJCE or FilteredSun)");
+            }
+        } catch (Exception e) {
+            throw new SecurityException(
+                "Failed to create CertPathBuilder: PKIX: " + e.getMessage());
         }
 
         System.out.println("\n\tAlgorithm class instantiation results:");

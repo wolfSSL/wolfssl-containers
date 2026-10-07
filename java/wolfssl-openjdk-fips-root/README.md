@@ -130,6 +130,12 @@ The following list includes the services that are left exposed/available:
 - CertificateFactory (X.509)
 - Configuration (JavaLoginConfig)
 - Policy (JavaPolicy)
+- CertPathBuilder (PKIX)
+
+CertPathBuilder (PKIX) is added with `wolfssl.filtered.sun.additionalServices`
+in java.security, since wolfJCE only registers its own CertPathBuilder with
+wolfSSL 5.9.2+. This can be removed when this image updates its wolfSSL
+bundle to 5.9.2+. CertPathBuilder path building crypto still uses wolfJCE.
 
 ### JVM Module Requirements
 The filtered providers require specific JVM flags (set in `JAVA_TOOL_OPTIONS`)

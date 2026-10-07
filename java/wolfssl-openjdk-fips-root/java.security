@@ -78,6 +78,13 @@ security.provider.10=JdkSASL
 # Note: SUN, SunRsaSign, SunEC, SunJSSE, SunJCE replaced with filtered versions
 
 #
+# Expose SUN PKIX CertPathBuilder through FilteredSun. wolfJCE only registers
+# its own CertPathBuilder with wolfSSL 5.9.2+. Path building crypto
+# (Signature, MessageDigest) still uses wolfJCE.
+#
+wolfssl.filtered.sun.additionalServices=CertPathBuilder.PKIX
+
+#
 # A list of preferred providers for specific algorithms. These providers will
 # be searched for matching algorithms before the list of registered providers.
 # Entries containing errors (parsing, etc) will be ignored. Use the
