@@ -586,12 +586,12 @@ docker run -e WOLFJCE_DEBUG=true \
 **ASN parsing error, invalid input (-140)** - This error has been observed
 when testing connections to `www.github.com:443`. This is an ASN decoding
 issue that affected wolfSSL 5.8.0 and was fixed in wolfSSL 5.8.2. Current
-builds of this container use wolfSSL 5.9.1 and are not affected.
+builds of this container use wolfSSL 5.9.4 and are not affected.
 
 ## Version Information
 
-- **wolfSSL**: 5.9.1 Commercial FIPS v5.2.3 (default),
-  or 5.9.1 GPLv3 FIPS Ready (with `--fips=ready`, not FIPS validated)
+- **wolfSSL**: 5.9.4 Commercial FIPS v5.2.3 (default),
+  or 5.9.4 GPLv3 FIPS Ready (with `--fips=ready`, not FIPS validated)
 - **Base Image**: Root.io OpenJDK 19 (Debian Bookworm Slim)
 - **wolfcrypt-jni**: Master branch (GitHub)
 - **wolfssljni**: Master branch (GitHub)

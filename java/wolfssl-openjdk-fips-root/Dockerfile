@@ -74,8 +74,8 @@ ENV CLASSPATH=$JUNIT_HOME/junit-4.13.2.jar:$JUNIT_HOME/hamcrest-core-1.3.jar
 FROM builder AS wolfssl-source-v5.2.3
 RUN --mount=type=secret,id=wolfssl_pw,required=true \
     PW="$(cat /run/secrets/wolfssl_pw)" \
-    && curl -fLso /tmp/wolfssl-commercial.7z "https://www.wolfssl.com/comm/wolfssl/wolfssl-5.9.1-commercial-fips-v5.2.3.7z" \
-    && echo "13280504dbfea0cb891404ef9ad4f2ee3ab02e0a327c80f93bc1f546224ef8db  /tmp/wolfssl-commercial.7z" | sha256sum -c - \
+    && curl -fLso /tmp/wolfssl-commercial.7z "https://www.wolfssl.com/comm/wolfssl/wolfssl-5.9.4-commercial-fips-v5.2.3.7z" \
+    && echo "e47fe9926dbc4eec1518b4e9dac74d0bca1d447608a98ba35628da674fc28dac  /tmp/wolfssl-commercial.7z" | sha256sum -c - \
     && 7z x /tmp/wolfssl-commercial.7z -p"$PW" -o/build \
     && rm -f /tmp/wolfssl-commercial.7z \
     && ls -la /build/ \
@@ -85,8 +85,8 @@ RUN --mount=type=secret,id=wolfssl_pw,required=true \
 # required. FIPS Ready contains the wolfCrypt FIPS module code but is NOT a
 # FIPS validated module.
 FROM builder AS wolfssl-source-ready
-RUN curl -fLso /tmp/wolfssl-fips-ready.zip "https://www.wolfssl.com/wolfssl-5.9.1-gplv3-fips-ready.zip" \
-    && echo "c7a12081ead6cd67778e032602451e9efd13716cd0531fe2bc16ca796cd0a0e6  /tmp/wolfssl-fips-ready.zip" | sha256sum -c - \
+RUN curl -fLso /tmp/wolfssl-fips-ready.zip "https://www.wolfssl.com/wolfssl-5.9.4-gplv3-fips-ready.zip" \
+    && echo "f1dc8081a41c8cbb02fd6c67edff9d79e35038d647b6290b1e2ff7d9f81ac647  /tmp/wolfssl-fips-ready.zip" | sha256sum -c - \
     && 7z x /tmp/wolfssl-fips-ready.zip -o/build \
     && rm -f /tmp/wolfssl-fips-ready.zip \
     && ls -la /build/ \
